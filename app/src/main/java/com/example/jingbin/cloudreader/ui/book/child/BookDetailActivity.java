@@ -13,8 +13,9 @@ import com.example.jingbin.cloudreader.bean.book.BookDetailBean;
 import com.example.jingbin.cloudreader.bean.book.BooksBean;
 import com.example.jingbin.cloudreader.databinding.ActivityBookDetailBinding;
 import com.example.jingbin.cloudreader.databinding.HeaderBookDetailBinding;
-import com.example.jingbin.cloudreader.http.HttpUtils;
+import com.example.jingbin.cloudreader.http.HttpClient;
 import com.example.jingbin.cloudreader.utils.CommonUtils;
+import com.example.jingbin.cloudreader.utils.DebugUtil;
 import com.example.jingbin.cloudreader.view.webview.WebViewActivity;
 
 import rx.Observer;
@@ -38,6 +39,7 @@ public class BookDetailActivity extends BaseHeaderActivity<HeaderBookDetailBindi
             booksBean = (BooksBean) getIntent().getSerializableExtra(EXTRA_PARAM);
         }
 
+        setMotion(setHeaderPicView(),true);
         initSlideShapeTheme(setHeaderImgUrl(), setHeaderImageView());
 
         setTitle(booksBean.getTitle());
@@ -54,7 +56,9 @@ public class BookDetailActivity extends BaseHeaderActivity<HeaderBookDetailBindi
     }
 
     private void loadBookDetail() {
-        Subscription get = HttpUtils.getInstance().getDouBanServer().getBookDetail(booksBean.getId())
+        DebugUtil.error("------http2");
+        Subscription get = HttpClient.Builder.getDouBanService().getBookDetail(booksBean.getId())
+//        Subscription get = HttpUtils.getInstance().getDouBanServer().getBookDetail(booksBean.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BookDetailBean>() {
@@ -96,6 +100,11 @@ public class BookDetailActivity extends BaseHeaderActivity<HeaderBookDetailBindi
     @Override
     protected ImageView setHeaderImageView() {
         return bindingHeaderView.imgItemBg;
+    }
+
+    @Override
+    protected ImageView setHeaderPicView() {
+        return bindingHeaderView.ivOnePhoto;
     }
 
     @Override
